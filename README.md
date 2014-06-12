@@ -43,8 +43,8 @@ The plugin requires one configuration entry.
 Configure the service_key in your project configuration by
 adding an entry like so: $RDECK_BASE/projects/{project}/etc/project.properties
 
-    project.plugin.Notification.PagerDutyNotification.service_key=xx123049e89dd45f28ce35467a08577yz
+    project.plugin.Notification.RedmineNotification.service_key=ssX123049e89dd45f28ce35467a08577yz
 
 Or configure it at the instance level: $RDECK_BASE/etc/framework.properties
 
-    framework.plugin.Notification.PagerDutyNotification.service_key=xx123049e89dd45f28ce35467a08577yz
+    framework.plugin.Notification.RedmineNotification.service_key=ssX123049e89dd45f28ce35467a08577yz
