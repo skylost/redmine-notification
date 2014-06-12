@@ -13,6 +13,7 @@ Context variables usable in the subject line:
 * `${job.project}`: Job project name.
 * `${job.name}`: Job name.
 
+
 * Description: This string will be set as the description for the generated incident.
 
 Context variables usable in the description line:
