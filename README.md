@@ -3,25 +3,27 @@ Use this [notification](http://rundeck.org/docs/developer/notification-plugin-de
 plugin to send [issues](http://www.redmine.org/projects/redmine/wiki/Rest_Issues)
 events to your [Redmine](http://www.redmine.org) service.
 
-The plugin requires one parameter:
+The plugin requires three parameters :
 
-* subject: This string will be set as the description for the generated incident.
+* subject: This string will be set as the description for the generated incident. 
 
 Context variables usable in the subject line:
 
-* `${job.status}`: Job execution status (eg, FAILED, SUCCESS).
-* `${job.project}`: Job project name.
-* `${job.name}`: Job name.
+ * `${job.status}`: Job execution status (eg, FAILED, SUCCESS).
+ * `${job.project}`: Job project name.
+ * `${job.name}`: Job name.
 
 
-* Description: This string will be set as the description for the generated incident.
+* Description: This string will be set as the description for the generated incident.*
 
 Context variables usable in the description line:
 
-* `${job.status}`: Job execution status (eg, FAILED, SUCCESS).
-* `${job.project}`: Job project name.
-* `${job.name}`: Job name.
-* `${job.user}`: User that executed the job.
+ * `${job.status}`: Job execution status (eg, FAILED, SUCCESS).
+ * `${job.project}`: Job project name.
+ * `${job.name}`: Job name.
+ * `${job.user}`: User that executed the job.
+
+* Project: This integer will bee set as the project for the generated issues
 
 
 ## Installation
