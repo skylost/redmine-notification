@@ -4,23 +4,22 @@ import com.dtolabs.rundeck.core.plugins.configuration.ValidationException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode
 
-// See http://rundeck.org/docs/developer/notification-plugin-development.html
+
+// See http://rundeck.org/docs/javadoc/index.html
 // See https://github.com/rundeck-plugins/pagerduty-notification
 
 
 // Defaults parameters
 class DEFAULTS {
-  static String REDMINE_URL="https://redmine.init/issues.json"
-  static String REDMINE_PROJECT="277"
+  static String REDMINE_PROJECT="1"
   static String REDMINE_PRIORITY_ID="4"
-  static String REDMINE_TRACKER_ID="7"
-  static String SUBJECT_LINE='RUNDECK => [${job.project}] [${job.name}] => ${job.status}'
+  static String REDMINE_TRACKER_ID="3"
+  static String SUBJECT_LINE='RUNDECK => Projet : [${job.project}], Job : [${job.name}] => ${job.status}'
   static String DESCRIPTION_LINE='[${job.project}] job => \"${job.name}\" run by ${job.user} => ${job.status}'
 }
 
-/**
-* Expands the Subject string using a predefined set of tokens
-*/
+
+// Expands the Subject string using a predefined set of tokens
 def subjectString(text,binding) {
   //defines the set of tokens usable in the subject configuration property
   def tokens=[
@@ -60,7 +59,6 @@ def descriptionString(text,binding) {
 * @param configuration
 */
 def triggerEvent(Map executionData, Map configuration) {
-  System.err.println("DEBUG: service_key="+configuration.service_key)
   System.err.println("DEBUG: redmine_Project="+configuration.project)
   def expandedSubject = subjectString(configuration.subject, [execution:executionData])
   def expandedDescription = descriptionString(configuration.description, [execution:executionData])
@@ -69,17 +67,21 @@ def triggerEvent(Map executionData, Map configuration) {
     issue:[
       project_id: configuration.project,
       subject: expandedSubject,
-      priority_id: DEFAULTS.REDMINE_PRIORITY_ID,
-      tracker_id: DEFAULTS.REDMINE_TRACKER_ID,
+      priority_id: configuration.priority,
+      tracker_id: configuration.tracker,
       description: expandedDescription,
     ]
   ]
     
   // Send the request.
-  def url = new URL(DEFAULTS.REDMINE_URL)
-  def connection = url.openConnection()
+  def url = new URL(configuration.redmine_url)
+  def proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(configuration.proxy_url, Integer.parseInt(configuration.proxy_port)));
+  def connection = null
+  if (configuration.proxy == "true") { 
+    connection = url.openConnection(proxy)
+  } else { connection = url.openConnection() }
   connection.setRequestMethod("POST")
-  connection.setRequestProperty("X-Redmine-API-Key", configuration.service_key)
+  connection.setRequestProperty("X-Redmine-API-Key", configuration.redmine_apikey)
   connection.setRequestProperty("Content-type", "application/json")
   connection.doOutput = true
   def writer = new OutputStreamWriter(connection.outputStream)
@@ -108,8 +110,14 @@ rundeckPlugin(NotificationPlugin){
   configuration{
     subject title:"Subject", description:"Incident subject line. Can contain \${job.status}, \${job.project}, \${job.name}", defaultValue:DEFAULTS.SUBJECT_LINE,required:true
     description title:"Description", description:"Incident description line. Can contain \${job.project}, \${job.name}, \${job.user}, \${job.status}", defaultValue:DEFAULTS.DESCRIPTION_LINE,required:true
-    project title:"Project", description:"Define project name. Example : 277", defaultValue:DEFAULTS.REDMINE_PROJECT,required:true
-    service_key title:"Service API Key", description:"The service key", scope:"Project"
+    project title:"Project", description:"Define project id. Example : 1 (Rundeck)", defaultValue:DEFAULTS.REDMINE_PROJECT,required:true
+    tracker title:"Tracker", description:"Define tracker id. Example : 1 (Change), 2 (Incident), 3 (Problem), 4 (Information)", defaultValue:DEFAULTS.REDMINE_TRACKER_ID,required:true
+    priority title:"Priority", description:"Define project id. Example : 1 (No Priority), 2 (low), 3 (Normal), 4 (High)", defaultValue:DEFAULTS.REDMINE_PRIORITY_ID,required:true    
+    proxy title:"Proxy", description:"Proxy Setting", scope:"Framework"
+    proxy_url title:"URL Proxy", description:"URL Proxy Setting", scope:"Framework"
+    proxy_port title:"PORT Proxy", description:"PORT Proxy Setting", scope:"Framework"
+    redmine_url title:"Redmine URL", description:"Redmine url", scope:"Framework"
+    redmine_apikey title:"Redmine API Key", description:"Redmine API key", scope:"Framework"
   }
   
   onstart { Map executionData,Map configuration ->

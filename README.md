@@ -1,11 +1,24 @@
+A Rundeck plugin implemented in Groovy
 
-Use this [notification](http://rundeck.org/docs/developer/notification-plugin-development.html)
+Use this [notification](http://rundeck.org/docs/developer/notification-plugin.html#groovy-plugin-type)
 plugin to send [issues](http://www.redmine.org/projects/redmine/wiki/Rest_Issues)
 events to your [Redmine](http://www.redmine.org) service.
 
-The plugin requires one parameter:
 
-* subject: This string will be set as the description for the generated incident.
+## Installation
+
+Copy the groovy script to the plugins directory:
+
+    cp src/RedmineNotification.groovy to $RDECK_BASE/libext
+
+and start using it!
+
+
+## Required parameters
+
+The plugin requires three parameters :
+
+* Subject: This string will be set as the subject for the generated incident.
 
 Context variables usable in the subject line:
 
@@ -22,26 +35,42 @@ Context variables usable in the description line:
 * `${job.name}`: Job name.
 * `${job.user}`: User that executed the job.
 
+* Project: This integer defines ID of the Redmine project.
 
-## Installation
+* Tracker: This integer defines ID of the Redmine tracker.
 
-Copy the groovy script to the plugins directory:
+* Priority: This integer defines ID of the Redmine priority.
 
-    cp src/RedmineNotification.groovy to $RDECK_BASE/libext
-
-and start using it!
 
 ## Configuration
 
-The plugin requires one configuration entry.
+The plugin requires three or five configurations entries.
 
-* service_key: This is the API Key to your service.
+* proxy: This configuration enable proxy settings:
 
-Configure the service_key in your project configuration by
-adding an entry like so: $RDECK_BASE/projects/{project}/etc/project.properties
+Enable proxy setting in your instance level: $RDECK_BASE/etc/framework.properties
 
-    project.plugin.Notification.PagerDutyNotification.service_key=xx123049e89dd45f28ce35467a08577yz
+    framework.plugin.Notification.RedmineNotification.proxy = true
 
-Or configure it at the instance level: $RDECK_BASE/etc/framework.properties
+* proxy_url: This is the URL proxy setting 
 
-    framework.plugin.Notification.PagerDutyNotification.service_key=xx123049e89dd45f28ce35467a08577yz
+Configure the URL proxy setting in your instance level: $RDECK_BASE/etc/framework.properties 
+
+    framework.plugin.Notification.RedmineNotification.proxy_url = proxy.int
+
+* proxy_port:
+
+Configure the proxy port setting in your instance level: $RDECK_BASE/etc/framework.properties
+    framework.plugin.Notification.RedmineNotification.proxy_port = 3128
+
+* redmine_url: This is the redmine URL 
+
+Configure the redmine_url in your instance level: $RDECK_BASE/etc/framework.properties
+
+    framework.plugin.Notification.RedmineNotification.redmine_url = https://your.redmine.org/issues.json
+
+* redmine_apikey: This is the API Key to your redmine service.
+
+Configure the redmine_apikey in your instance level: $RDECK_BASE/etc/framework.properties
+
+    framework.plugin.Notification.RedmineNotification.redmine_apikey = xx123049e89dd45f28ce35467a08577yz
