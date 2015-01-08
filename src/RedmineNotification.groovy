@@ -15,7 +15,7 @@ class DEFAULTS {
   static String REDMINE_PRIORITY_ID="4"
   static String REDMINE_TRACKER_ID="3"
   static String SUBJECT_LINE='RUNDECK => Projet : [${job.project}], Job : [${job.name}] => ${job.status}'
-  static String DESCRIPTION_LINE='[${job.project}] job => \"${job.name}\" run by ${job.user} => ${job.status}'
+  static String DESCRIPTION_LINE='[${job.project}] job => run by ${job.user} => ${job.status}'
 }
 
 
