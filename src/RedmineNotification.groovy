@@ -42,7 +42,8 @@ def descriptionString(text,binding) {
     '${job.project}': binding.execution.job.project,
     '${job.name}': binding.execution.job.name,
     '${job.user}': binding.execution.user,
-    '${job.status}': binding.execution.status.toUpperCase(),    
+    '${job.status}': binding.execution.status.toUpperCase(),   
+    '${execution.href}': binding.execution.href, 
   ]
   text.replaceAll(/(\$\{\S+?\})/){
     if(tokens[it[1]]){
